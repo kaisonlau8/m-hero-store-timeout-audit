@@ -130,6 +130,14 @@ sudo cloudflared service install
 # 日志位置：/Library/Logs/com.cloudflare.cloudflared.out.log
 ```
 
+> **注意**：`cloudflared service install` 生成的 plist 可能缺少 `tunnel run` 参数，导致服务反复重启无法连接。
+> 若出现此问题，手动修复：
+> ```bash
+> sudo plutil -replace ProgramArguments -xml '<array><string>/opt/homebrew/bin/cloudflared</string><string>tunnel</string><string>run</string></array>' /Library/LaunchDaemons/com.cloudflare.cloudflared.plist
+> sudo launchctl unload /Library/LaunchDaemons/com.cloudflare.cloudflared.plist
+> sudo launchctl load /Library/LaunchDaemons/com.cloudflare.cloudflared.plist
+> ```
+
 **管理命令：**
 
 ```bash
