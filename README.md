@@ -119,14 +119,15 @@ pm2 save                   # 保存当前进程列表（配合 startup 使用）
 **启动隧道：**
 
 ```bash
-# 前台运行（可看日志）
+# 手动运行（前台，可看日志）
 cloudflared tunnel run store-audit
+```
 
-# 后台运行
-cloudflared tunnel run store-audit &
+**设为系统服务（推荐，开机自启 + 崩溃自动重启）：**
 
-# 设为系统服务（开机自启，需 sudo）
-cloudflared service install
+```bash
+sudo cloudflared service install
+# 日志位置：/Library/Logs/com.cloudflare.cloudflared.out.log
 ```
 
 **管理命令：**
@@ -134,7 +135,7 @@ cloudflared service install
 ```bash
 cloudflared tunnel list                    # 查看所有隧道
 cloudflared tunnel info store-audit        # 查看隧道状态
-cloudflared tunnel cleanup store-audit     # 清理连接
+sudo cloudflared service uninstall         # 卸载系统服务
 ```
 
 ## 覆写脚本
