@@ -83,6 +83,60 @@ npm start      # 生产模式
 
 访问 `http://localhost:3001` 查看仪表板。
 
+## 生产部署
+
+### PM2 守护进程
+
+使用 [pm2](https://pm2.keymetrics.io/) 保持 Node 服务后台运行并自动重启：
+
+```bash
+# 安装 pm2
+npm install -g pm2
+
+# 启动服务
+pm2 start src/index.js --name store-audit
+
+# 常用命令
+pm2 logs store-audit       # 查看日志
+pm2 stop store-audit       # 停止
+pm2 restart store-audit    # 重启
+pm2 startup                # 设置开机自启
+pm2 save                   # 保存当前进程列表（配合 startup 使用）
+```
+
+### Cloudflare Tunnel 公网访问
+
+通过 Cloudflare Tunnel 将本地服务暴露到公网，无需开放端口或公网 IP。
+
+**已完成配置：**
+
+- 域名：`https://audit-m-hero.41box.com` → `localhost:3001`
+- 隧道名：`store-audit`
+- 隧道 ID：`b225afb2-2e7c-4f5f-acd7-c54916ea4d08`
+- 凭证文件：`~/.cloudflared/b225afb2-2e7c-4f5f-acd7-c54916ea4d08.json`
+- 配置文件：`~/.cloudflared/config.yml`
+
+**启动隧道：**
+
+```bash
+# 前台运行（可看日志）
+cloudflared tunnel run store-audit
+
+# 后台运行
+cloudflared tunnel run store-audit &
+
+# 设为系统服务（开机自启，需 sudo）
+cloudflared service install
+```
+
+**管理命令：**
+
+```bash
+cloudflared tunnel list                    # 查看所有隧道
+cloudflared tunnel info store-audit        # 查看隧道状态
+cloudflared tunnel cleanup store-audit     # 清理连接
+```
+
 ## 覆写脚本
 
 将 xlsx 内容覆写到飞书门店清单多维表格，xlsx 为唯一正确依据：
