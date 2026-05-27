@@ -1,0 +1,19 @@
+{
+  "name": "store-timeout-audit",
+  "version": "1.0.0",
+  "description": "门店超时提醒登记审计系统：比对门店清单与登记表，自动通知督导",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "feishu-bitable-middleware": "file:../feishu-bitable-middleware",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2",
+    "xlsx": "^0.18.5"
+  }
+}
