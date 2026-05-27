@@ -4,9 +4,9 @@
       <el-header class="header">
         <h2>门店超时提醒登记审计系统</h2>
         <div class="header-actions">
-          <el-button type="primary" :loading="running" @click="runAudit">手动触发审计</el-button>
-          <el-button @click="refreshData" :loading="loading">刷新数据</el-button>
-          <el-button @click="showConfig = true">配置管理</el-button>
+          <el-button type="primary" size="small" :loading="running" @click="runAudit">手动触发审计</el-button>
+          <el-button size="small" @click="refreshData" :loading="loading">刷新数据</el-button>
+          <el-button size="small" @click="showConfig = true">配置管理</el-button>
         </div>
       </el-header>
 
@@ -33,7 +33,7 @@
 
         <!-- 总览卡片 -->
         <el-row :gutter="16" class="summary-cards">
-          <el-col :span="6">
+          <el-col :xs="12" :sm="12" :md="6">
             <el-card shadow="hover">
               <div class="stat-card">
                 <div class="stat-value">{{ summary.totalStores }}</div>
@@ -41,7 +41,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col :span="6">
+          <el-col :xs="12" :sm="12" :md="6">
             <el-card shadow="hover">
               <div class="stat-card registered">
                 <div class="stat-value">{{ summary.registeredCount }}</div>
@@ -49,7 +49,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col :span="6">
+          <el-col :xs="12" :sm="12" :md="6">
             <el-card shadow="hover">
               <div class="stat-card unregistered">
                 <div class="stat-value">{{ summary.unregisteredCount }}</div>
@@ -57,7 +57,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col :span="6">
+          <el-col :xs="12" :sm="12" :md="6">
             <el-card shadow="hover">
               <div class="stat-card rate">
                 <div class="stat-value">{{ summary.registrationRate }}</div>
@@ -67,16 +67,16 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="16" style="margin-top: 16px;">
+        <el-row :gutter="16" class="middle-row" style="margin-top: 16px;">
           <!-- 按督导统计 -->
-          <el-col :span="14">
-            <el-card shadow="hover">
+          <el-col :xs="24" :sm="24" :md="14" class="stretch-col">
+            <el-card shadow="hover" class="stretch-card">
               <template #header>
                 <span>各督导登记情况</span>
               </template>
               <el-table :data="supervisorTableData" stripe style="width: 100%">
                 <el-table-column prop="name" label="督导" width="100" />
-                <el-table-column prop="total" label="负责门店" width="100" align="center" />
+                <el-table-column prop="total" label="负责门店" width="100" align="center" class-name="hide-on-mobile" />
                 <el-table-column prop="registered" label="已登记" width="100" align="center">
                   <template #default="{ row }">
                     <span style="color: #67c23a;">{{ row.registered }}</span>
@@ -87,7 +87,7 @@
                     <span style="color: #f56c6c; font-weight: bold;">{{ row.unregistered }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="登记率" align="center">
+                <el-table-column label="登记率" align="center" class-name="hide-on-mobile">
                   <template #default="{ row }">
                     <el-progress
                       :percentage="row.total > 0 ? Number((row.registered / row.total * 100).toFixed(1)) : 0"
@@ -102,12 +102,12 @@
           </el-col>
 
           <!-- 区域分布图 -->
-          <el-col :span="10">
-            <el-card shadow="hover">
+          <el-col :xs="24" :sm="24" :md="10" class="stretch-col">
+            <el-card shadow="hover" class="stretch-card">
               <template #header>
                 <span>区域登记分布</span>
               </template>
-              <v-chart :option="areaChartOption" style="height: 320px;" autoresize />
+              <v-chart :option="areaChartOption" class="chart-area" autoresize />
             </el-card>
           </el-col>
         </el-row>
@@ -115,16 +115,16 @@
         <!-- 门店列表 -->
         <el-card shadow="hover" style="margin-top: 16px;">
           <template #header>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="store-list-header">
               <span>门店列表</span>
-              <div>
-                <el-select v-model="filterSupervisor" placeholder="筛选督导" clearable style="width: 140px; margin-right: 8px;">
+              <div class="store-list-filters">
+                <el-select v-model="filterSupervisor" placeholder="筛选督导" clearable size="small">
                   <el-option v-for="s in supervisorNames" :key="s" :label="s" :value="s" />
                 </el-select>
-                <el-select v-model="filterArea" placeholder="筛选区域" clearable style="width: 120px; margin-right: 8px;">
+                <el-select v-model="filterArea" placeholder="筛选区域" clearable size="small">
                   <el-option v-for="a in areaNames" :key="a" :label="a" :value="a" />
                 </el-select>
-                <el-select v-model="filterStatus" placeholder="登记状态" clearable style="width: 120px;">
+                <el-select v-model="filterStatus" placeholder="登记状态" clearable size="small">
                   <el-option label="已登记" value="registered" />
                   <el-option label="未登记" value="unregistered" />
                 </el-select>
@@ -132,9 +132,9 @@
             </div>
           </template>
           <el-table :data="filteredStores" stripe style="width: 100%" max-height="500">
-            <el-table-column prop="code" label="门店编码" width="140" />
+            <el-table-column prop="code" label="门店编码" width="140" class-name="hide-on-mobile" />
             <el-table-column prop="name" label="门店名称" min-width="240" />
-            <el-table-column prop="area" label="区域" width="100" />
+            <el-table-column prop="area" label="区域" width="100" class-name="hide-on-mobile" />
             <el-table-column prop="supervisor" label="督导" width="100" />
             <el-table-column label="登记状态" width="100" align="center">
               <template #default="{ row }">
@@ -151,13 +151,13 @@
           <template #header>
             <span>历史趋势</span>
           </template>
-          <v-chart :option="historyChartOption" style="height: 300px;" autoresize />
+          <v-chart :option="historyChartOption" class="chart-history" autoresize />
         </el-card>
       </el-main>
     </el-container>
 
     <!-- 配置弹窗 -->
-    <el-dialog v-model="showConfig" title="配置管理" width="600px">
+    <el-dialog v-model="showConfig" title="配置管理" width="600px" class="config-dialog">
       <el-form label-width="100px">
         <el-form-item label="定时任务">
           <el-input v-model="configData.scheduleCron" disabled />
@@ -341,6 +341,10 @@ onMounted(() => {
   margin: 0;
   color: #303133;
 }
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
 .summary-cards {
   text-align: center;
 }
@@ -364,5 +368,102 @@ onMounted(() => {
   font-size: 12px;
   color: #909399;
   margin-top: 4px;
+}
+.chart-area {
+  height: 320px;
+  width: 100%;
+}
+.chart-history {
+  height: 300px;
+  width: 100%;
+}
+.store-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.store-list-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.store-list-filters .el-select {
+  width: 120px;
+}
+.middle-row {
+  display: flex;
+  align-items: stretch;
+}
+.stretch-col {
+  display: flex;
+}
+.stretch-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.stretch-card :deep(.el-card__body) {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 0 12px 16px;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 0;
+  }
+  .header h2 {
+    font-size: 18px;
+  }
+  .header-actions {
+    width: 100%;
+  }
+  .header-actions .el-button {
+    flex: 1;
+  }
+  .stat-value {
+    font-size: 28px;
+  }
+  .chart-area {
+    height: 260px;
+  }
+  .chart-history {
+    height: 250px;
+  }
+  .store-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .store-list-filters {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .store-list-filters .el-select {
+    width: 100px;
+    flex: 1;
+    min-width: 80px;
+  }
+  :deep(.hide-on-mobile) {
+    display: none;
+  }
+  :deep(.el-dialog) {
+    width: 92vw !important;
+    max-width: 600px;
+  }
+  :deep(.el-dialog__body) {
+    padding: 12px;
+  }
+  :deep(.el-form-item__label) {
+    width: 80px !important;
+  }
+  :deep(.el-table) {
+    font-size: 13px;
+  }
 }
 </style>
