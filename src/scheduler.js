@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import config from '../config.js';
 import { runAudit } from './audit.js';
 import { notifySupervisors, notifyManagers } from './messenger.js';
+import { setAuditCache } from './cache.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,6 +13,9 @@ async function executeAuditJob() {
   try {
     const auditResult = await runAudit();
     console.log(`审计完成: 总数=${auditResult.totalStores}, 已登记=${auditResult.registeredCount}, 未登记=${auditResult.unregisteredCount}`);
+
+    // 更新仪表板缓存
+    setAuditCache(auditResult);
 
     // 通知督导
     const supResults = await notifySupervisors(auditResult);

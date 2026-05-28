@@ -1,19 +1,17 @@
 import { Router } from 'express';
 import { runAudit, loadAuditHistory, getLatestExcelPath } from '../audit.js';
 import { executeAuditJob } from '../scheduler.js';
+import { getAuditCache, setAuditCache } from '../cache.js';
 import config from '../../config.js';
 import fs from 'fs';
 
 const router = Router();
 
-// 缓存最近一次审计结果
-let lastAuditResult = null;
-
 async function getOrRunAudit() {
-  if (!lastAuditResult) {
-    lastAuditResult = await runAudit();
+  if (!getAuditCache()) {
+    setAuditCache(await runAudit());
   }
-  return lastAuditResult;
+  return getAuditCache();
 }
 
 // GET /api/dashboard/summary
@@ -92,7 +90,7 @@ router.get('/export', (req, res) => {
 router.post('/run', async (req, res) => {
   try {
     const result = await executeAuditJob();
-    lastAuditResult = result;
+    setAuditCache(result);
     res.json({
       success: true,
       data: {
@@ -141,8 +139,8 @@ router.put('/config', (req, res) => {
 // POST /api/dashboard/refresh — 刷新缓存数据
 router.post('/refresh', async (req, res) => {
   try {
-    lastAuditResult = await runAudit();
-    res.json({ success: true, data: { timestamp: lastAuditResult.timestamp } });
+    setAuditCache(await runAudit());
+    res.json({ success: true, data: { timestamp: getAuditCache().timestamp } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
