@@ -4,7 +4,11 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const tz = process.env.TZ || 'Asia/Shanghai';
+process.env.TZ = tz;
+
 export default {
+  tz,
   feishu: {
     appId: process.env.FEISHU_APP_ID,
     appSecret: process.env.FEISHU_APP_SECRET,

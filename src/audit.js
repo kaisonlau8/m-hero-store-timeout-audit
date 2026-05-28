@@ -4,6 +4,10 @@ import XLSX from 'xlsx';
 import fs from 'fs';
 import path from 'path';
 
+function localDateStr() {
+  return new Date().toLocaleString('sv-SE', { timeZone: config.tz }).slice(0, 10);
+}
+
 async function fetchAllRecords(tableId, viewId) {
   let allRecords = [];
   let pageToken = null;
@@ -245,7 +249,7 @@ function checkDiscrepancies(xlsxStores, bitableStores) {
 }
 
 async function generateExcel(allStores, bySupervisor) {
-  const dateStr = new Date().toISOString().slice(0, 10);
+  const dateStr = localDateStr();
   const fileName = `audit_${dateStr}.xlsx`;
   const filePath = path.join(config.outputDir, fileName);
 
@@ -295,7 +299,7 @@ async function generateExcel(allStores, bySupervisor) {
 }
 
 function saveAuditLog(result) {
-  const dateStr = new Date().toISOString().slice(0, 10);
+  const dateStr = localDateStr();
   const logPath = path.join(config.logsDir, `audit_${dateStr}.json`);
 
   let history = [];

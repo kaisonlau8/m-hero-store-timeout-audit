@@ -60,7 +60,7 @@ async function executeAuditJob() {
 }
 
 function appendCronLog(entry) {
-  const dateStr = new Date().toISOString().slice(0, 10);
+  const dateStr = new Date().toLocaleString('sv-SE', { timeZone: config.tz }).slice(0, 10);
   const logPath = path.join(config.logsDir, `cron_${dateStr}.log`);
   const line = JSON.stringify(entry) + '\n';
   fs.appendFileSync(logPath, line, 'utf-8');
@@ -77,9 +77,9 @@ export function startScheduler() {
     executeAuditJob().catch(err => {
       console.error('定时任务异常:', err);
     });
-  });
+  }, { timezone: config.tz });
 
-  console.log(`定时任务已启动: ${cronExpr}`);
+  console.log(`定时任务已启动: ${cronExpr} (时区: ${config.tz})`);
 }
 
 export { executeAuditJob };
